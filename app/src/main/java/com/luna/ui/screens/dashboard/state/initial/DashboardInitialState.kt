@@ -15,9 +15,12 @@ import androidx.compose.ui.unit.dp
 
 @ExperimentalComposeUiApi
 @Composable
-fun DashboardInitialState() {
+fun DashboardInitialState(
+    modifier: Modifier = Modifier,
+    onStartButtonClicked: () -> Unit
+) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.SpaceEvenly,
@@ -28,7 +31,10 @@ fun DashboardInitialState() {
             contentDescription = "",
             Modifier.size(200.dp, 200.dp)
         )
-        Button(onClick = { }, Modifier.padding(top = 16.dp)) {
+        Button(
+            onClick = { onStartButtonClicked() },
+            Modifier.padding(top = 16.dp)
+        ) {
             Text(text = "Start")
         }
     }
@@ -38,5 +44,5 @@ fun DashboardInitialState() {
 @Composable
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 fun DashboardInitialStatePreview() {
-    DashboardInitialState()
+    DashboardInitialState(onStartButtonClicked = {})
 }

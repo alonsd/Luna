@@ -1,9 +1,8 @@
 package com.luna.ui.screens.dashboard.viewmodel
 
-import android.os.CountDownTimer
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.luna.core.custom_implementations.LunaCountDownTimer
 import com.luna.data.repository.LunaRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -24,27 +23,25 @@ class DashboardViewModel @Inject constructor(
     private val _uiEvent = MutableSharedFlow<UiEvent>()
     private val uiEvent = _uiEvent.asSharedFlow()
 
-    private val countDownTimer = object : CountDownTimer(3000, 1000) {
-        override fun onTick(p0: Long) {
-            Log.d("defaultAppDebuger", "deviceInVerticalRange: ${_uiState.value.isDeviceInRange}")
-        }
+    private val countDownTimer = LunaCountDownTimer(
+        millisInFuture = 3000,
+        countDownInterval = 1000,
+        onTimerFinished = { timer ->
+            timer.start()
+            submitUiState(_uiState.value.copy(enableDeviceTiltInstructionSubmitButton = true))
+        }, onTimerTick = { timeRemaining ->
 
-        override fun onFinish() {
-            deviceTiltInstructionsTimerRunning = false
-            // TODO - go to 2nd step
-            restartTimer()
-        }
-    }
+        })
 
     private var deviceTiltInstructionsTimerRunning = false
 
     init {
         observeUiEvents()
-        getDeviceAngel()
     }
 
-    private fun getDeviceAngel() = viewModelScope.launch {
+    private fun getDeviceAngle() = viewModelScope.launch {
         lunaRepository.getDeviceTiltAngle { angle ->
+            submitUiState(_uiState.value.copy(deviceAngle = angle.toString()))
             val isDeviceInVerticalRange = angle in 90 downTo 70
             submitUiState(
                 _uiState.value.copy(
@@ -70,6 +67,10 @@ class DashboardViewModel @Inject constructor(
                 UiEvent.FaceRecognitionButtonClicked -> {
 
                 }
+                UiEvent.StartButtonClicked -> {
+                    getDeviceAngle()
+                    submitAction(UiAction.ShowDeviceTiltInstruction)
+                }
             }
         }
     }
@@ -88,6 +89,7 @@ class DashboardViewModel @Inject constructor(
     }
 
     sealed interface UiEvent {
+        object StartButtonClicked : UiEvent
         object DeviceTiltButtonClicked : UiEvent
         object FaceRecognitionButtonClicked : UiEvent
     }
@@ -95,15 +97,18 @@ class DashboardViewModel @Inject constructor(
     data class UiState(
         val state: State = State.Initial,
         val isDeviceInRange: Boolean = false,
+        val enableDeviceTiltInstructionSubmitButton : Boolean = false,
+        val deviceAngle : String = "0",
         var errorMessage: String = ""
     ) {
         enum class State {
             Error,
-            Initial
+            Initial,
         }
     }
 
     sealed interface UiAction {
+        object NoAction : UiAction
         object ShowDeviceTiltInstruction : UiAction
         object ShowFaceRecognitionInstruction : UiAction
     }

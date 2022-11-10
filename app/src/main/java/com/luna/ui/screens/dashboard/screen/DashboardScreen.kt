@@ -2,39 +2,34 @@ package com.luna.ui.screens.dashboard.screen
 
 import android.widget.Toast
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.luna.ui.screens.dashboard.state.initial.DashboardInitialState
+import com.luna.ui.screens.dashboard.state.initial.PhoneTiltInstructions
 import com.luna.ui.screens.dashboard.viewmodel.DashboardViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @RootNavGraph(start = true)
 @ExperimentalComposeUiApi
 @Destination
 @Composable
 fun DashboardScreen(
-    navigator: DestinationsNavigator,
     viewModel : DashboardViewModel = hiltViewModel()
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
+    val uiAction = viewModel.uiAction.collectAsState(initial = DashboardViewModel.UiAction.NoAction)
+    when(uiAction.value) {
+        DashboardViewModel.UiAction.NoAction -> Unit
+        DashboardViewModel.UiAction.ShowDeviceTiltInstruction -> {
+            PhoneTiltInstructions(uiState.deviceAngle, uiState.enableDeviceTiltInstructionSubmitButton)
+        }
+        DashboardViewModel.UiAction.ShowFaceRecognitionInstruction -> {
 
-    LaunchedEffect(key1 = "") {
-        viewModel.uiAction.collect { uiAction ->
-            when (uiAction) {
-                DashboardViewModel.UiAction.ShowDeviceTiltInstruction -> {
-
-                }
-                DashboardViewModel.UiAction.ShowFaceRecognitionInstruction -> {
-
-                }
-            }
         }
     }
 
@@ -44,7 +39,10 @@ fun DashboardScreen(
             Toast.makeText(LocalContext.current, uiState.errorMessage, Toast.LENGTH_SHORT).show()
         }
         DashboardViewModel.UiState.State.Initial -> {
-            DashboardInitialState()
+            DashboardInitialState(onStartButtonClicked = {
+                viewModel.submitEvent(DashboardViewModel.UiEvent.StartButtonClicked)
+            })
+
         }
     }
 }
