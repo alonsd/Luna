@@ -30,11 +30,40 @@ class DashboardViewModel @Inject constructor(
             timer.start()
             submitUiState(_uiState.value.copy(enableDeviceTiltInstructionSubmitButton = true))
         }, onTimerTick = {})
+    private var currentDashboardInstruction = DashboardInstruction.NoInstruction
 
     private var deviceTiltInstructionsTimerRunning = false
 
     init {
         observeUiEvents()
+    }
+
+
+    private fun observeUiEvents() = viewModelScope.launch {
+        uiEvent.collect { event ->
+            when (event) {
+                UiEvent.StartButtonClicked -> {
+                    startDeviceTiltInstructions()
+                }
+                UiEvent.DeviceTiltSubmitButtonClicked -> {
+                    startFaceRecognitionInstruction()
+                }
+                UiEvent.OnFaceRecognized -> {
+                    resetScreen()
+                }
+            }
+        }
+    }
+
+    private fun startFaceRecognitionInstruction() {
+        currentDashboardInstruction = DashboardInstruction.FaceRecognition
+        submitAction(UiAction.OpenFaceRecognitionInstruction)
+    }
+
+    private fun startDeviceTiltInstructions() {
+        getDeviceAngle()
+        submitAction(UiAction.OpenDeviceTiltInstruction)
+        currentDashboardInstruction = DashboardInstruction.DeviceTilt
     }
 
     private fun getDeviceAngle() = viewModelScope.launch {
@@ -52,28 +81,19 @@ class DashboardViewModel @Inject constructor(
             } else if (deviceTiltInstructionsTimerRunning && isDeviceInVerticalRange.not()) {
                 countDownTimer.cancel()
                 deviceTiltInstructionsTimerRunning = false
+                if (currentDashboardInstruction != DashboardInstruction.FaceRecognition) return@getDeviceTiltAngle
+                submitAction(UiAction.OpenDeviceTiltInstruction)
+                submitUiState(_uiState.value.copy(enableDeviceTiltInstructionSubmitButton = false))
             }
         }
     }
 
-    private fun observeUiEvents() = viewModelScope.launch {
-        uiEvent.collect { event ->
-            when (event) {
-                UiEvent.DeviceTiltSubmitButtonClicked -> {
-                    submitAction(UiAction.OpenFaceRecognitionInstruction)
-                }
-                UiEvent.StartButtonClicked -> {
-                    getDeviceAngle()
-                    submitAction(UiAction.OpenDeviceTiltInstruction)
-                }
-                UiEvent.OnFaceRecognized -> {
-                    submitAction(UiAction.ShowSuccessfulFaceRecognitionToast)
-                    countDownTimer.cancel()
-                    deviceTiltInstructionsTimerRunning = false
-                    submitUiState(UiState())
-                }
-            }
-        }
+    private fun resetScreen() {
+        submitAction(UiAction.ShowSuccessfulFaceRecognitionToast)
+        countDownTimer.cancel()
+        deviceTiltInstructionsTimerRunning = false
+        currentDashboardInstruction = DashboardInstruction.NoInstruction
+        submitUiState(UiState())
     }
 
 
@@ -98,8 +118,8 @@ class DashboardViewModel @Inject constructor(
     data class UiState(
         val state: State = State.Initial,
         val isDeviceInRange: Boolean = false,
-        val enableDeviceTiltInstructionSubmitButton : Boolean = false,
-        val deviceAngle : String = "0",
+        val enableDeviceTiltInstructionSubmitButton: Boolean = false,
+        val deviceAngle: String = "0",
         var errorMessage: String = ""
     ) {
         enum class State {

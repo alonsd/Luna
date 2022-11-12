@@ -1,6 +1,7 @@
 package com.luna.core.ui.camera
 
 import android.content.Context
+import android.util.Log
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
@@ -38,24 +39,23 @@ fun LunaCameraView(onFaceRecognized: () -> Unit) {
     val previewView = remember { PreviewView(context) }
     val imageAnalyzer = ImageAnalysis.Builder()
         .build()
-        .also {
-            it.setAnalyzer(Executors.newSingleThreadExecutor(), CameraImageAnalyzer { bitmap ->
+        .also { imageAnalysis ->
+            imageAnalysis.setAnalyzer(Executors.newSingleThreadExecutor(), CameraImageAnalyzer { bitmap ->
                 val image = InputImage.fromBitmap(bitmap, 0)
                 val options = FaceDetectorOptions.Builder()
-                    .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_FAST)
-                    .setContourMode(FaceDetectorOptions.CONTOUR_MODE_ALL)
+                    .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
+                    .setContourMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
                     .build()
 
                 val detector: FaceDetector = FaceDetection.getClient(options)
                 detector.process(image)
                     .addOnSuccessListener { facesList ->
                         val faceRecognized = facesList.isEmpty().not()
-//                        if (faceRecognized.not()) return@addOnSuccessListener
-                        onFaceRecognized()
+                        Log.d("defaultAppDebuger", "faceRecognized: $faceRecognized")
+                        if (faceRecognized.not()) return@addOnSuccessListener
+//                        onFaceRecognized()
                     }
-                    .addOnFailureListener {
-                        onFaceRecognized()
-                    }
+                    .addOnFailureListener {}
 
             })
         }
