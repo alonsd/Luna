@@ -6,5 +6,7 @@
     <string name="dashboard_phone_tilt_instructions">Position The Device Between 70 to 90 Degrees\n\nCurrent Device Angle: %1$s</string>
     <string name="dashboard_phone_tilt_instructions_submit">Confirm</string>
     <string name="dashboard_phone_tilt_instructions_title">Phone Tilt Angle</string>
+    <string name="dashboard_face_recognition_instructions_title">Hold Camera On Face</string>
+    <string name="dashboard_screen_face_detected_successfully">Face detected successfully</string>
 
 </resources>

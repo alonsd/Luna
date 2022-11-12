@@ -10,10 +10,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.luna.R
+import com.luna.ui.screens.dashboard.action.FaceRecognitionInstructions
+import com.luna.ui.screens.dashboard.action.PhoneTiltInstructions
 import com.luna.ui.screens.dashboard.state.initial.DashboardInitialState
-import com.luna.ui.screens.dashboard.state.initial.FaceRecognitionInstructions
-import com.luna.ui.screens.dashboard.state.initial.PhoneTiltInstructions
 import com.luna.ui.screens.dashboard.viewmodel.DashboardViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
@@ -44,8 +46,11 @@ fun DashboardScreen(
         }
         DashboardViewModel.UiAction.OpenFaceRecognitionInstruction -> {
             FaceRecognitionInstructions {
-
+                viewModel.submitEvent(DashboardViewModel.UiEvent.OnFaceRecognized)
             }
+        }
+        DashboardViewModel.UiAction.ShowSuccessfulFaceRecognitionToast -> {
+            Toast.makeText(LocalContext.current, stringResource(R.string.dashboard_screen_face_detected_successfully), Toast.LENGTH_SHORT).show()
         }
     }
 

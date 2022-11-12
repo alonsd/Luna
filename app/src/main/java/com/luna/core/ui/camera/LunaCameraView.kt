@@ -1,8 +1,6 @@
 package com.luna.core.ui.camera
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.util.Log
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
@@ -10,7 +8,7 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -18,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.google.mlkit.vision.common.InputImage
@@ -32,7 +29,7 @@ import kotlin.coroutines.suspendCoroutine
 
 @Composable
 @ExperimentalGetImage
-fun LunaCameraView(onImageAnalyzed : (bitmap: Bitmap) -> Unit) {
+fun LunaCameraView(onFaceRecognized: () -> Unit) {
     val lensFacing = CameraSelector.LENS_FACING_FRONT
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -51,14 +48,15 @@ fun LunaCameraView(onImageAnalyzed : (bitmap: Bitmap) -> Unit) {
 
                 val detector: FaceDetector = FaceDetection.getClient(options)
                 detector.process(image)
-                    .addOnSuccessListener {
-                        val results = if (it.isEmpty()) "failure" else "success"
-                        Log.d("defaultAppDebuger", "detector results: $results")
+                    .addOnSuccessListener { facesList ->
+                        val faceRecognized = facesList.isEmpty().not()
+//                        if (faceRecognized.not()) return@addOnSuccessListener
+                        onFaceRecognized()
                     }
-                    .addOnFailureListener{
-//                        Log.d("defaultAppDebuger", "detector results: failure")
+                    .addOnFailureListener {
+                        onFaceRecognized()
                     }
-                onImageAnalyzed(bitmap)
+
             })
         }
     val cameraSelector = CameraSelector.Builder()
@@ -78,8 +76,8 @@ fun LunaCameraView(onImageAnalyzed : (bitmap: Bitmap) -> Unit) {
         preview.setSurfaceProvider(previewView.surfaceProvider)
     }
 
-    Box(contentAlignment = Alignment.BottomCenter, modifier = Modifier.size(250.dp, 250.dp)) {
-        AndroidView({ previewView }, modifier = Modifier.size(250.dp,250.dp))
+    Box(contentAlignment = Alignment.BottomCenter, modifier = Modifier.fillMaxSize()) {
+        AndroidView({ previewView }, modifier = Modifier.fillMaxSize())
 
     }
 }

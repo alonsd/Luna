@@ -29,9 +29,7 @@ class DashboardViewModel @Inject constructor(
         onTimerFinished = { timer ->
             timer.start()
             submitUiState(_uiState.value.copy(enableDeviceTiltInstructionSubmitButton = true))
-        }, onTimerTick = { timeRemaining ->
-
-        })
+        }, onTimerTick = {})
 
     private var deviceTiltInstructionsTimerRunning = false
 
@@ -64,12 +62,15 @@ class DashboardViewModel @Inject constructor(
                 UiEvent.DeviceTiltSubmitButtonClicked -> {
                     submitAction(UiAction.OpenFaceRecognitionInstruction)
                 }
-                UiEvent.FaceRecognitionButtonClicked -> {
-
-                }
                 UiEvent.StartButtonClicked -> {
                     getDeviceAngle()
                     submitAction(UiAction.OpenDeviceTiltInstruction)
+                }
+                UiEvent.OnFaceRecognized -> {
+                    submitAction(UiAction.ShowSuccessfulFaceRecognitionToast)
+                    countDownTimer.cancel()
+                    deviceTiltInstructionsTimerRunning = false
+                    submitUiState(UiState())
                 }
             }
         }
@@ -91,7 +92,7 @@ class DashboardViewModel @Inject constructor(
     sealed interface UiEvent {
         object StartButtonClicked : UiEvent
         object DeviceTiltSubmitButtonClicked : UiEvent
-        object FaceRecognitionButtonClicked : UiEvent
+        object OnFaceRecognized : UiEvent
     }
 
     data class UiState(
@@ -111,5 +112,6 @@ class DashboardViewModel @Inject constructor(
         object NoAction : UiAction
         object OpenDeviceTiltInstruction : UiAction
         object OpenFaceRecognitionInstruction : UiAction
+        object ShowSuccessfulFaceRecognitionToast : UiAction
     }
 }

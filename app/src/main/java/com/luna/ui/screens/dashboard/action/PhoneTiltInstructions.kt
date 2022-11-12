@@ -1,4 +1,4 @@
-package com.luna.ui.screens.dashboard.state.initial
+package com.luna.ui.screens.dashboard.action
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
