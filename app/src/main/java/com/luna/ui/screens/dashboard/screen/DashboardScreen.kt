@@ -3,6 +3,7 @@ package com.luna.ui.screens.dashboard.screen
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -19,10 +20,11 @@ import com.ramcosta.composedestinations.annotation.RootNavGraph
 
 @RootNavGraph(start = true)
 @ExperimentalComposeUiApi
+@ExperimentalGetImage
 @Destination
 @Composable
 fun DashboardScreen(
-    viewModel : DashboardViewModel = hiltViewModel()
+    viewModel: DashboardViewModel = hiltViewModel()
 ) {
 
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission(), onResult = {})
@@ -33,7 +35,7 @@ fun DashboardScreen(
 
     val uiState by viewModel.uiState.collectAsState()
     val uiAction = viewModel.uiAction.collectAsState(initial = DashboardViewModel.UiAction.NoAction)
-    when(uiAction.value) {
+    when (uiAction.value) {
         DashboardViewModel.UiAction.NoAction -> Unit
         DashboardViewModel.UiAction.OpenDeviceTiltInstruction -> {
             PhoneTiltInstructions(uiState.deviceAngle, uiState.enableDeviceTiltInstructionSubmitButton) {
@@ -41,7 +43,9 @@ fun DashboardScreen(
             }
         }
         DashboardViewModel.UiAction.OpenFaceRecognitionInstruction -> {
-            FaceRecognitionInstructions()
+            FaceRecognitionInstructions {
+
+            }
         }
     }
 
