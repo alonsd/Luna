@@ -4,5 +4,7 @@
     <string name="app_name">Luna</string>
 
     <string name="dashboard_phone_tilt_instructions">Position The Device Between 70 to 90 Degrees\n\nCurrent Device Angle: %1$s</string>
+    <string name="dashboard_phone_tilt_instructions_submit">Confirm</string>
+    <string name="dashboard_phone_tilt_instructions_title">Phone Tilt Angle</string>
 
 </resources>

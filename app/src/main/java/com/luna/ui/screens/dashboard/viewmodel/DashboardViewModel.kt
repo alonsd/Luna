@@ -61,15 +61,15 @@ class DashboardViewModel @Inject constructor(
     private fun observeUiEvents() = viewModelScope.launch {
         uiEvent.collect { event ->
             when (event) {
-                UiEvent.DeviceTiltButtonClicked -> {
-
+                UiEvent.DeviceTiltSubmitButtonClicked -> {
+                    submitAction(UiAction.OpenFaceRecognitionInstruction)
                 }
                 UiEvent.FaceRecognitionButtonClicked -> {
 
                 }
                 UiEvent.StartButtonClicked -> {
                     getDeviceAngle()
-                    submitAction(UiAction.ShowDeviceTiltInstruction)
+                    submitAction(UiAction.OpenDeviceTiltInstruction)
                 }
             }
         }
@@ -90,7 +90,7 @@ class DashboardViewModel @Inject constructor(
 
     sealed interface UiEvent {
         object StartButtonClicked : UiEvent
-        object DeviceTiltButtonClicked : UiEvent
+        object DeviceTiltSubmitButtonClicked : UiEvent
         object FaceRecognitionButtonClicked : UiEvent
     }
 
@@ -109,7 +109,7 @@ class DashboardViewModel @Inject constructor(
 
     sealed interface UiAction {
         object NoAction : UiAction
-        object ShowDeviceTiltInstruction : UiAction
-        object ShowFaceRecognitionInstruction : UiAction
+        object OpenDeviceTiltInstruction : UiAction
+        object OpenFaceRecognitionInstruction : UiAction
     }
 }
