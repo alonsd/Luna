@@ -8,5 +8,6 @@
     <string name="dashboard_phone_tilt_instructions_title">Phone Tilt Angle</string>
     <string name="dashboard_face_recognition_instructions_title">Hold Camera On Face</string>
     <string name="dashboard_screen_face_detected_successfully">Face detected successfully</string>
+    <string name="dashboard_screen_start_button">Start</string>
 
 </resources>

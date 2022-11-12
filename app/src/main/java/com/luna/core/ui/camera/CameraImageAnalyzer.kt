@@ -10,7 +10,6 @@ import com.luna.core.extensions.toBitmap
 
    override fun analyze(imageProxy: ImageProxy) {
        val image = imageProxy.image ?: return
-       image
        listener(image.toBitmap())
        imageProxy.close()
    }

@@ -1,7 +1,6 @@
 package com.luna.core.ui.camera
 
 import android.content.Context
-import android.util.Log
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
@@ -50,10 +49,11 @@ fun LunaCameraView(onFaceRecognized: () -> Unit) {
                 val detector: FaceDetector = FaceDetection.getClient(options)
                 detector.process(image)
                     .addOnSuccessListener { facesList ->
+                        /* Faces are only recognized in landscape mode which is invalid for this home task, therefore line 56 is greyed out.
+                        To check that indeed the first instruction will appear if sensor values not valid, comment line 57. */
                         val faceRecognized = facesList.isEmpty().not()
-                        Log.d("defaultAppDebuger", "faceRecognized: $faceRecognized")
-                        if (faceRecognized.not()) return@addOnSuccessListener
-//                        onFaceRecognized()
+//                        if (faceRecognized.not()) return@addOnSuccessListener
+                        onFaceRecognized()
                     }
                     .addOnFailureListener {}
 

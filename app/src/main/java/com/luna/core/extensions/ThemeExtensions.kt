@@ -5,7 +5,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import com.luna.ui.theme.LunaTheme
 
-fun ComponentActivity.setHeroesContent(content: @Composable () -> Unit){
+fun ComponentActivity.setLunaContent(content: @Composable () -> Unit){
     setContent {
         LunaTheme {
             content()

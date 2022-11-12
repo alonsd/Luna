@@ -22,7 +22,11 @@ import com.luna.core.ui.dialog.LunaAlertDialog
 
 
 @Composable
-fun PhoneTiltInstructions(deviceAngle: String, submitButtonEnabled: Boolean, onConfirmClicked: () -> Unit) {
+fun PhoneTiltInstructions(
+    deviceAngle: String,
+    submitButtonEnabled: Boolean,
+    onConfirmClicked: () -> Unit
+) {
     LunaAlertDialog(
         title = {
             Surface(

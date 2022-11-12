@@ -10,8 +10,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.luna.R
 
 @ExperimentalComposeUiApi
 @Composable
@@ -27,7 +29,7 @@ fun DashboardInitialState(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painterResource(id = com.luna.R.drawable.luna),
+            painterResource(id = R.drawable.luna),
             contentDescription = "",
             Modifier.size(200.dp, 200.dp)
         )
@@ -35,7 +37,7 @@ fun DashboardInitialState(
             onClick = { onStartButtonClicked() },
             Modifier.padding(top = 16.dp)
         ) {
-            Text(text = "Start")
+            Text(text = stringResource(R.string.dashboard_screen_start_button))
         }
     }
 }

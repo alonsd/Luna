@@ -3,14 +3,7 @@ package com.luna.core.extensions
 import android.graphics.*
 import android.media.Image
 import java.io.ByteArrayOutputStream
-import java.nio.ByteBuffer
 
-
-fun ByteBuffer.toBitmap(): Bitmap? {
-    val imageBytes = ByteArray(this.remaining())
-    this.get(imageBytes)
-    return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-}
 
 fun Image.toBitmap(): Bitmap {
     val yBuffer = planes[0].buffer
