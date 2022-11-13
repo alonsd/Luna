@@ -49,8 +49,8 @@ fun LunaCameraView(onFaceRecognized: () -> Unit) {
                 val detector: FaceDetector = FaceDetection.getClient(options)
                 detector.process(image)
                     .addOnSuccessListener { facesList ->
-                        /* Faces are only recognized in landscape mode which is invalid for this home task, therefore line 56 is greyed out.
-                        To check that indeed the first instruction will appear if sensor values not valid, comment line 57. */
+                        /* Faces are only recognized in landscape mode which is invalid for this home task, therefore line 55 is greyed out.
+                        To check that indeed the first instruction will appear if sensor values not valid, comment line 56. */
                         val faceRecognized = facesList.isEmpty().not()
 //                        if (faceRecognized.not()) return@addOnSuccessListener
                         onFaceRecognized()
