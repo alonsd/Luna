@@ -11,7 +11,7 @@ class LunaLocalDataSourceImpl @Inject constructor(
     private val accelerationSensor: MeasurableSensor,
 ) : LunaLocalDataSource {
 
-    override suspend fun getDeviceTiltAngle(onDeviceTiltAngleChange : (angel : Int) -> Unit) {
+    override suspend fun getDeviceTiltAngle(onDeviceTiltAngleChange: (angel: Int) -> Unit) {
 
 
         var accelerometerReading = floatArrayOf()
